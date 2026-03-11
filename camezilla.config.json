@@ -1,0 +1,33 @@
+{
+    "url": "http://localhost/website/",
+    "base-directory": "website/",
+    "log-file": "app.log",
+    "actions": "actions/",
+    "api": "api/",
+    "pages": "pages/",
+    "resources": "resources/",
+    "texts": {
+        "enabled": true,
+        "path": "resources/texts/texts.json",
+        "default-language": "en"
+    },
+    "autoload": {
+        "namespaces": {
+            "App\\": "app/",
+            "Camezilla\\": "camezilla/"
+        }
+    },
+    "database": {
+        "enabled": true,
+        "host": "localhost",
+        "user": "root",
+        "password": "",
+        "name": "my_database",
+        "error-page": "error.php"
+    },
+    "authentication": {
+        "enabled": true,
+        "secret-key": "your-secret-key",
+        "login-page": "login.php"
+    }
+}
