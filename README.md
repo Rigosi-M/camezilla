@@ -185,6 +185,22 @@ Oggetto di configurazione per l'authentication.
 }
 ```
 
+#### 3.2.12 Mail
+
+Oggetto di configurazione per la funzionalità di invio email.
+
+- `enabled`: booleano per indicare se il progetto utilizzerà la funzionalità di invio email.
+- `host`: mail da utilizzare come mittente (obbligatorio se `enabled` è `true`).
+
+```json
+{
+    "mail": {
+        "enabled": true,
+        "host": "host@example.com"
+    }
+}
+```
+
 ## 4. Funzionalità del framework
 
 ### 4.1 Entry point
@@ -228,7 +244,29 @@ use Camezilla\Loggers\Logger;
 Logger::info("Hello, world!");
 ```
 
-### 4.3 Configurazione
+### 4.3 Sessione
+
+Il framework utilizza la sessione PHP per la gestione di alcune funzionalità, come l'autenticazione degli utenti. Si occupa di avviare la sessione automaticamente all'inizio di ogni richiesta, quindi non è necessario avviare la sessione manualmente nei file in cui si utilizzano le funzionalità del framework. Tuttavia, è possibile utilizzare le funzioni di gestione della sessione PHP per gestire i dati della sessione all'interno della Web App.
+
+```php
+start_session();
+
+add_session_item("key", "value");
+$value = get_session_item("key");
+remove_session_item("key");
+```
+
+### 4.4 Globals
+
+Il framework fornisce una funzionalità di gestione dei globals, che consente di memorizzare e accedere a dati globali all'interno della Web App.
+
+```php
+add_global_item("key", "value");
+$value = get_global_item("key");
+remove_global_item("key");
+```
+
+### 4.5 Configurazione
 
 Il framework fornisce la possibilità di aggiungere configurazioni personalizzate al file `camezilla.config.json`. 
 Per accedere a queste configurazioni all'interno della Web App, è possibile utilizzare la funzione `get_config()`.
@@ -245,7 +283,7 @@ $config = get_config();
 $url = $config->get('url');
 ```
 
-### 4.4 Logging
+### 4.6 Logging
 
 Il framework fornisce funzionalità di logging per la registrazione di messaggi di log all'interno di un file. Per utilizzare questa funzionalità, è necessario configurare il percorso del file di log nel file `camezilla.config.json`. Una volta configurato il percorso del file di log, è possibile utilizzare le funzioni di logging fornite dal framework per registrare i messaggi di log.
 
@@ -262,7 +300,7 @@ Durante l'esecuzione è possibile modificare il path del file di log tramite la 
 set_log_file("path/to/new/file.log");
 ```
 
-### 4.5 Database
+### 4.7 Database
 
 Il framework fornisce funzionalità di connessione al database. Per utilizzare questa funzionalità, è necessario configurare i parametri di connessione al database nel file `camezilla.config.json`. Una volta configurati i parametri di connessione al database, per accedere all'istanza del database è possibile utilizzare la funzione `get_database()`.
 
@@ -278,9 +316,9 @@ connect_database();
 
 Se la connessione al database fallisce, l'utente verrà reindirizzato alla pagina di errore configurata nel file `camezilla.config.json`.
 
-### 4.6 Texts
+### 4.8 Texts
 
-#### 4.6.1 Configurazione dei texts
+#### 4.8.1 Configurazione dei texts
 
 Un file di testi per essere valido dovrà essere un file `json` con la seguente struttura:
 
@@ -312,7 +350,7 @@ Un file di testi per essere valido dovrà essere un file `json` con la seguente 
 }
 ```
 
-#### 4.6.2 Utilizzo dei texts
+#### 4.8.2 Utilizzo dei texts
 
 Il framework fornisce funzionalità per la gestione di testi statici multilinguistici. Per utilizzare questa funzionalità, è necessario configurare i parametri dei texts nel file `camezilla.config.json`. Una volta configurati i parametri dei texts, per accedere a un testo è possibile utilizzare la funzione `t()`.
 
@@ -332,7 +370,7 @@ Per utilizzare i placeholder all'interno dei testi, è possibile passare un arra
 echo t("welcome-user", ["username" => "John Doe"], "it"); // Benvenuto, John Doe!
 ```
 
-#### 4.6.3 Utilizzo delle lingue
+#### 4.8.3 Utilizzo delle lingue
 
 È possibile modificare la lingua di default da utilizzare per i testi tramite la funzione `set_language()`.
 
@@ -344,11 +382,29 @@ echo t("welcome"); // Benvenuto in Camezilla!
 
 Il framework di default utilizza la lingua specificata nella configurazione dei texts.
 
-### 4.7 Authentication
+### 4.9 Mail
+
+Il framework fornisce funzionalità per l'invio di email. Per utilizzare questa funzionalità, è necessario configurare i parametri di mail nel file `camezilla.config.json`. Una volta configurati i parametri di mail, è possibile utilizzare la funzione `send_mail()` per inviare email.
+
+```php
+bool $success = send_mail("recipient@example.com", "Subject", "Message");
+```
+
+È possibile verificare se la funzionalità di invio email è abilitata tramite la funzione `is_mail_enabled()`.
+
+```php
+if (is_mail_enabled()) {
+    echo "Mail functionality is enabled.";
+} else {
+    echo "Mail functionality is disabled.";
+}
+```
+
+### 4.10 Authentication
 
 Il framework fornisce funzionalità di authentication per la gestione dell'autenticazione degli utenti. Per utilizzare questa funzionalità, è necessario configurare i parametri di authentication nel file `camezilla.config.json`. Una volta configurati i parametri di authentication, è possibile utilizzare le funzioni di authentication fornite dal framework per gestire l'autenticazione degli utenti.
 
-#### 4.7.1 Autenticazione Web App server-side
+#### 4.10.1 Autenticazione Web App server-side
 
 Per proteggere una pagina della Web App server-side, è possibile utilizzare la funzione `require_user_authentication()`, che si occuperà di verificare se l'utente è autenticato e, in caso contrario, di reindirizzarlo alla pagina di login configurata nel file `camezilla.config.json`.
 
@@ -389,7 +445,7 @@ $user_email = get_authenticated_email();
 echo "User ID: $user_id, Email: $user_email";
 ```
 
-#### 4.7.2 Autenticazione API
+#### 4.10.2 Autenticazione API
 
 Per proteggere un endpoint API, è possibile utilizzare la funzione `require_api_authentication()`, che si occuperà di verificare se l'utente è autenticato e, in caso contrario, di restituire una risposta di errore.
 
@@ -411,11 +467,11 @@ Per generare un token di autenticazione con i dati dell'utente, è possibile uti
 $token = generate_jwt(["id" => "user-id", "email" => "user-email"]);
 ```
 
-### 4.8 Sicurezza
+### 4.11 Sicurezza
 
 Il framework fornisce funzionalità basilari di sicurezza per la protezione della Web App da attacchi comuni.
 
-#### 4.8.1 Protezione da attacchi XSS
+#### 4.11.1 Protezione da attacchi XSS
 
 Per proteggere la Web App da attacchi XSS, è possibile utilizzare la funzione `e()`, che si occuperà di eseguire l'escape dei caratteri speciali HTML all'interno di una stringa.
 
@@ -425,7 +481,7 @@ $user_input = "<script>alert('XSS');</script>";
 echo e($user_input); // &lt;script&gt;alert(&#039;XSS&#039;);&lt;/script&gt;
 ```
 
-#### 4.8.2 Password hashing
+#### 4.11.2 Password hashing
 
 Per proteggere le password degli utenti, è necessario utilizzare la funzione `hash_password()`, che si occuperà di eseguire l'hash della password utilizzando un algoritmo sicuro.
 
@@ -447,7 +503,7 @@ if (verify_password($password, $hashed_password)) {
 }
 ```
 
-### 4.9 Path
+### 4.12 Path
 
 Il framework fornisce la funzione `current_url()` per ottenere l'URL del documento corrente.
 
@@ -455,7 +511,7 @@ Il framework fornisce la funzione `current_url()` per ottenere l'URL del documen
 $current_url = current_url();
 ```
 
-### 4.10 API
+### 4.13 API
 
 Il framework fornisce la funzione `api()` per ottenere l'URL di un endpoint API.
 
@@ -463,7 +519,7 @@ Il framework fornisce la funzione `api()` per ottenere l'URL di un endpoint API.
 $endpoint_url = api("endpoint.php", "path-to-action");
 ```
 
-### 4.11 Actions
+### 4.14 Actions
 
 Il framework fornisce la funzione `action()` per ottenere l'URL di un'azione.
 
@@ -493,7 +549,7 @@ echo get_action_success(true); // Action executed successfully.
 echo get_action_success(); // null
 ```
 
-### 4.12 Pages
+### 4.15 Pages
 
 Il framework fornisce la funzione `page()` per ottenere l'URL di una pagina. È possibile specificare come secondo parametro un array di parametri da aggiungere all'URL della pagina.
 
@@ -501,7 +557,7 @@ Il framework fornisce la funzione `page()` per ottenere l'URL di una pagina. È 
 $page_url = page("page.php", ["param1" => "value1", "param2" => "value2"]);
 ```
 
-### 4.13 Resources
+### 4.16 Resources
 Il framework fornisce la funzione `resource()` per ottenere l'URL di una risorsa.
 
 ```php

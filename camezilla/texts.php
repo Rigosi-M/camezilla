@@ -23,7 +23,7 @@ function init_texts(): void {
 
     $config = get_config();
 
-    $GLOBALS['texts'] = load_texts();
+    add_global_item('texts', load_texts());
     set_language($config->get('texts.default-language') ?? get_first_language());
 }
 
@@ -69,11 +69,11 @@ function load_texts(): array {
 function get_texts(): array {
     require_texts_enabled();
 
-    if (!isset($GLOBALS['texts'])) {
+    if (!isset(get_global_item('texts'))) {
         throw new RuntimeException("Texts not initialized.");
     }
 
-    return $GLOBALS['texts'];
+    return get_global_item('texts');
 }
 
 
@@ -96,17 +96,17 @@ function set_language(string $lang): void {
         throw new RuntimeException("Language '$lang' not found in texts.");
     }
 
-    $GLOBALS['texts.language'] = $lang;
+    add_global_item('texts.language', $lang);
 }
 
 function get_language(): string {
     require_texts_enabled();
 
-    if (!isset($GLOBALS['texts.language'])) {
+    if (!isset(get_global_item('texts.language'))) {
         throw new RuntimeException("Language not set.");
     }
 
-    return $GLOBALS['texts.language'];
+    return get_global_item('texts.language');
 }
 
 function t(string $key, array $placeholders = [], ?string $lang = null): string {

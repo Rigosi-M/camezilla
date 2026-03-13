@@ -2,13 +2,13 @@
 use Camezilla\Models\Config;
 
 function init_config(): void {
-    $GLOBALS['config'] = Config::load(__DIR__ . '/../camezilla.config.json');
+    add_global_item('config', Config::load(__DIR__ . '/../camezilla.config.json'));
 }
 
 function get_config(): Config {
-    if ($GLOBALS['config'] === null) {
+    if (get_global_item('config') === null) {
         throw new Exception("Config not initialized");
     }
     
-    return $GLOBALS['config'];
+    return get_global_item('config');
 }

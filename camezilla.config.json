@@ -29,5 +29,9 @@
         "enabled": true,
         "secret-key": "your-secret-key",
         "login-page": "login.php"
+    },
+    "mail": {
+        "enabled": true,
+        "host": "host@example.com"
     }
 }

@@ -29,17 +29,17 @@ function init_database(): void {
     $password = $config->get('database.password');
     $name = $config->get('database.name');
 
-    $GLOBALS['database'] = new Database($host, $user, $password, $name);
+    add_global_item('database', new Database($host, $user, $password, $name));
 }
 
 function get_database(): Database {
     require_database_enabled();
 
-    if ($GLOBALS['database'] === null) {
+    if (get_global_item('database') === null) {
         throw new Exception("Database not initialized");
     }
 
-    return $GLOBALS['database'];
+    return get_global_item('database');
 }
 
 function connect_database(): void {

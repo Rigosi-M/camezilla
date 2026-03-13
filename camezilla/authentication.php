@@ -52,28 +52,22 @@ function verify_jwt(string $jwt): ?array {
     return $payload;
 }
 
-function start_session(): void {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-}
-
 function authenticate_user(int $user_id, string $email): void {
     require_authentication_enabled();
 
     start_session();
     session_regenerate_id(true);
 
-    $_SESSION['authentication.user-id'] = $user_id;
-    $_SESSION['authentication.email']   = $email;
+    add_session_item('authentication.user-id', $user_id);
+    add_session_item('authentication.email', $email);
 }
 
 function remove_user_authentication(): void {
     require_authentication_enabled();
     
     start_session();
-    unset($_SESSION['authentication.user-id']);
-    unset($_SESSION['authentication.email']);
+    remove_session_item('authentication.user-id');
+    remove_session_item('authentication.email');
     session_destroy();
 }
 
@@ -81,21 +75,21 @@ function is_user_authenticated(): bool {
     require_authentication_enabled();
 
     start_session();
-    return isset($_SESSION['authentication.user-id'], $_SESSION['authentication.email']);
+    return isset(get_session_item('authentication.user-id'), get_session_item('authentication.email'));
 }
 
 function get_authenticated_user_id(): ?int {
     require_authentication_enabled();
 
     start_session();
-    return $_SESSION['authentication.user-id'] ?? null;
+    return get_session_item('authentication.user-id');
 }
 
 function get_authenticated_email(): ?string {
     require_authentication_enabled();
 
     start_session();
-    return $_SESSION['authentication.email'] ?? null;
+    return get_session_item('authentication.email');
 }
 
 function require_user_authentication(): void {

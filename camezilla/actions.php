@@ -18,13 +18,13 @@ function action(string $relative_path, string $path, string $redirect): string {
 
 function set_action_success(string $success) {
     start_session();
-    $_SESSION['action.success'] = $success;
+    add_session_item('action.success', $success);
 }
 
 function get_action_success(?bool $clear = false): ?string {
     start_session();
 
-    $success = $_SESSION['action.success'] ?? null;
+    $success = get_session_item('action.success');
     if ($clear) {
         clear_action_success();
     }
@@ -34,18 +34,18 @@ function get_action_success(?bool $clear = false): ?string {
 
 function clear_action_success() {
     start_session();
-    unset($_SESSION['action.success']);
+    remove_session_item('action.success');
 }
 
 function set_action_error(string $error) {
     start_session();
-    $_SESSION['action.error'] = $error;
+    add_session_item('action.error', $error);
 }
 
 function get_action_error(?bool $clear = false): ?string {
     start_session();
 
-    $error = $_SESSION['action.error'] ?? null;
+    $error = get_session_item('action.error');
     if ($clear) {
         clear_action_error();
     }
@@ -55,5 +55,5 @@ function get_action_error(?bool $clear = false): ?string {
 
 function clear_action_error() {
     start_session();
-    unset($_SESSION['action.error']);
+    remove_session_item('action.error');
 }
