@@ -75,7 +75,7 @@ function is_user_authenticated(): bool {
     require_authentication_enabled();
 
     start_session();
-    return isset(get_session_item('authentication.user-id'), get_session_item('authentication.email'));
+    return get_session_item('authentication.user-id') !== null && get_session_item('authentication.email') !== null;
 }
 
 function get_authenticated_user_id(): ?int {

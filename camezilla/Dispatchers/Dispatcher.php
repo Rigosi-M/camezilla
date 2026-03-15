@@ -2,8 +2,6 @@
 
 namespace Camezilla\Dispatchers;
 
-use Camezilla\Services\Service;
-
 class Endpoint {
 
     public string $method;
@@ -70,7 +68,7 @@ class Dispatcher {
             set_action_success($success);
         }
 
-        header('Location: ' . $redirect);
+        header('Location: ' . page($redirect));
         exit();
     }
 

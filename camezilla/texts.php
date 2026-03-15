@@ -69,7 +69,7 @@ function load_texts(): array {
 function get_texts(): array {
     require_texts_enabled();
 
-    if (!isset(get_global_item('texts'))) {
+    if (get_global_item('texts') === null) {
         throw new RuntimeException("Texts not initialized.");
     }
 
@@ -92,7 +92,8 @@ function is_valid_language(string $lang): bool {
 function set_language(string $lang): void {
     require_texts_enabled();
 
-    if (!is_valid_language($lang)) {
+    $texts = get_texts();
+    if (!empty($texts) && !isset($texts[$lang])) {
         throw new RuntimeException("Language '$lang' not found in texts.");
     }
 
@@ -102,7 +103,7 @@ function set_language(string $lang): void {
 function get_language(): string {
     require_texts_enabled();
 
-    if (!isset(get_global_item('texts.language'))) {
+    if (get_global_item('texts.language') === null) {
         throw new RuntimeException("Language not set.");
     }
 
