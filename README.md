@@ -2,7 +2,7 @@
 
 ## 1. Panoramica
 - **Nome progetto:** Camezilla
-- **Versione:** 1.0.1
+- **Versione:** 1.0.2   
 - **Descrizione breve:** Framework leggero per la creazione di Web App e API server-side in PHP, a livello didattico.
 
 ## 2. Requisiti

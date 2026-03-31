@@ -2,6 +2,8 @@
 
 namespace Camezilla\Dispatchers;
 
+use Exception;
+
 class Endpoint {
 
     public string $method;
@@ -52,7 +54,7 @@ class Dispatcher {
             if ($endpoint->method === $method && $endpoint->path === $path) {
                 try {
                     ($endpoint->action)($params);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->internal_server_error();
                 }
             }
@@ -68,19 +70,23 @@ class Dispatcher {
             set_action_success($success);
         }
 
-        header('Location: ' . page($redirect));
-        exit();
+        if ($redirect) {
+            $location = (str_starts_with($redirect, 'http://') || str_starts_with($redirect, 'https://')) ? $redirect : page($redirect);
+            header('Location: ' . $location);
+            exit();
+        }
     }
 
-    public static function error_go_back(?string $error = null) {
-        $back = $_GET['back'] ?? null;
+    public static function error_go_back(?string $error = null, ?string $back = null) {
+        $back = $_GET['back'] ?? $back;
         
         if ($error) {
             set_action_error($error);
         }
         
         if ($back) {
-            header('Location: ' . $back);
+            $location = (str_starts_with($back, 'http://') || str_starts_with($back, 'https://')) ? $back : page($back);
+            header('Location: ' . $location);
             exit();
         } else {
             echo 'Error: ' . e($error);
@@ -93,7 +99,7 @@ class Dispatcher {
             case 'GET':
                 return $_GET;
             case 'POST':
-                return $_POST;
+                return $_POST + $_GET;
             default:
                 return [];
         }

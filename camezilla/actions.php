@@ -1,17 +1,18 @@
 <?php
 
-function action(string $relative_path, string $path, string $redirect): string {
+function action(string $relative_path, string $path, string $redirect, array $params = []): string {
     $config = get_config();
 
     $actions_dir = rtrim($config->get('actions') ?? 'actions', '/');
     $base = get_absolute_url(
         $actions_dir . '/' . ltrim($relative_path, '/')
     );
+    
     $query = http_build_query([
         'path' => $path,
         'redirect' => $redirect,
         'back' => current_url()
-    ]);
+    ] + $params);
     
     return $base . '?' . $query;
 }

@@ -21,10 +21,11 @@ function current_url(): string {
     $script_name = $_SERVER['SCRIPT_NAME'] ?? '';
     $query_string = $_SERVER['QUERY_STRING'] ?? '';
 
-    $base_dir = '/' . trim($config->get('base-directory') ?? '', '/');
-
-    if (str_starts_with($script_name, $base_dir)) {
-        $relative_path = substr($script_name, strlen($base_dir));
+    $base_url = rtrim($config->get('url') ?? '', '/');
+    $base_url_path = parse_url($base_url, PHP_URL_PATH) ?? '';
+    
+    if ($base_url_path && strpos($script_name, $base_url_path) === 0) {
+        $relative_path = substr($script_name, strlen($base_url_path));
     } else {
         $relative_path = $script_name;
     }
